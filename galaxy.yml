@@ -1,0 +1,14 @@
+namespace: snapserv
+name: debian
+version: 1.0.0
+readme: README.md
+authors:
+  - Pascal Mathis <mail@pascalmathis.com>
+description: Ansible Collection for Debian Systems
+license:
+  - GPL-3.0-or-later
+tags: []
+dependencies: {}
+repository: https://github.com/snapserv/ansible-collection-infra
+issues: https://github.com/snapserv/ansible-collection-infra/issues
+build_ignore: []
