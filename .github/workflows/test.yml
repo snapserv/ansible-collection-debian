@@ -36,14 +36,20 @@ jobs:
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
       - name: Lint with Molecule
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
         run: molecule -c molecule.yml lint -s lint
 
       - name: Test with Molecule
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
         run: |
           for ROLE_DIR in roles/*/; do
             pushd "${ROLE_DIR}" &>/dev/null
             echo "::group::Testing role $(basename "${ROLE_DIR}")"
-            molecule -c ../../molecule.yml test --all
+            molecule -c ../../molecule.yml test --all | grep -Ev '(::group::|::endgroup::)'
             echo "::endgroup::"
             popd &>/dev/null
           done
