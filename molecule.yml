@@ -1,0 +1,19 @@
+---
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - idempotence
+    - verify
+driver:
+  name: podman
+platforms:
+  - name: debian-buster
+    image: docker.io/library/debian:buster-20211201
+  - name: debian-bullseye
+    image: docker.io/library/debian:bullseye-20211201
+provisioner:
+  name: ansible
+  log: true
+verifier:
+  name: testinfra

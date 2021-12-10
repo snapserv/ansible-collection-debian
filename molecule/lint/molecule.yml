@@ -1,0 +1,4 @@
+---
+lint: |
+  set -e
+  ansible-lint -c "${MOLECULE_PROJECT_DIRECTORY}/ansible-lint.yml" .

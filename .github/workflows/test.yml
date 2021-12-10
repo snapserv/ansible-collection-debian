@@ -1,0 +1,52 @@
+---
+name: Test
+
+'on':
+  push:
+  pull_request:
+
+jobs:
+  molecule-base:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Python Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Lint with Molecule
+        run: molecule -c molecule.yml lint -s lint
+
+  molecule-role:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        role:
+          - apt
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Python Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Test with Molecule
+        run: |
+          cd roles/${{ matrix.role }}/
+          molecule -c ../../molecule.yml test --all
