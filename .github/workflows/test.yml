@@ -17,16 +17,23 @@ jobs:
         with:
           python-version: '3.x'
 
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
+
       - name: Install Python Dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
+          python3 -m pip install --upgrade --upgrade-strategy eager pip
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
       - name: Lint with Molecule
         run: molecule -c molecule.yml lint -s lint
 
   molecule-role:
     runs-on: ubuntu-20.04
+    needs:
+      - molecule-base
     strategy:
       fail-fast: false
       matrix:
@@ -41,10 +48,15 @@ jobs:
         with:
           python-version: '3.x'
 
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
+
       - name: Install Python Dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
+          python3 -m pip install --upgrade --upgrade-strategy eager pip
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
       - name: Test with Molecule
         run: |
