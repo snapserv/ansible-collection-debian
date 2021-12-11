@@ -1,0 +1,46 @@
+---
+- hosts: all
+  tasks:
+    - name: Ensure gnupg is installed
+      ansible.builtin.apt:
+        state: present
+        pkg: gnupg
+      check_mode: true
+
+    - name: Ensure primary sources.list is empty
+      ansible.builtin.template:
+        src: sources.list.j2
+        dest: /etc/apt/sources.list
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Ensure debian repository is present
+      ansible.builtin.apt_repository:
+        state: present
+        filename: debian
+        repo: deb https://deb.debian.org/debian {{ ansible_distribution_release }} main non-free contrib
+
+    - name: Ensure debian-updates repository is present
+      ansible.builtin.apt_repository:
+        state: present
+        filename: debian
+        repo: deb https://deb.debian.org/debian {{ ansible_distribution_release }}-updates main non-free contrib
+
+    - name: Ensure debian-backports repository is absent
+      ansible.builtin.apt_repository:
+        state: absent
+        filename: debian
+        repo: deb https://deb.debian.org/debian {{ ansible_distribution_release }}-backports main non-free contrib
+
+    - name: Ensure nginx repository key
+      ansible.builtin.apt_key:
+        state: present
+        id: 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+        url: https://nginx.org/keys/nginx_signing.key
+
+    - name: Ensure nginx repository
+      ansible.builtin.apt_repository:
+        state: present
+        filename: nginx
+        repo: deb http://nginx.org/packages/debian {{ ansible_distribution_release }} nginx

@@ -1,0 +1,33 @@
+---
+- name: Install APT dependencies
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    pkg: '{{ apt_dependencies }}'
+
+- name: Clear primary sources.list
+  ansible.builtin.template:
+    src: sources.list.j2
+    dest: '{{ apt_main_sources_path }}'
+    owner: root
+    group: root
+    mode: '0644'
+  when: apt_repositories|length > 0
+
+- name: Install APT repository keys
+  ansible.builtin.apt_key:
+    state: present
+    id: '{{ item.key_id }}'
+    url: '{{ item.key_url }}'
+  loop: '{{ apt_repositories }}'
+  when: >-
+    "key_id" in item and "key_url" in item
+
+- name: Configure APT repositories
+  ansible.builtin.apt_repository:
+    state: '{{ item.state | default("present") }}'
+    filename: '{{ item.name }}'
+    repo: '{{ item.repo }}'
+  loop: '{{ apt_repositories }}'
+  notify:
+    - Update APT cache

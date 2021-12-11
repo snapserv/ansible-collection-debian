@@ -1,0 +1,5 @@
+---
+apt_dependencies:
+  - gnupg
+
+apt_main_sources_path: /etc/apt/sources.list

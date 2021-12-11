@@ -1,4 +1,5 @@
 ---
 lint: |
   set -e
-  ansible-lint -c "${MOLECULE_PROJECT_DIRECTORY}/ansible-lint.yml" .
+  yamllint -c "${MOLECULE_PROJECT_DIRECTORY}/.yamllint.yml" .github/ molecule/ *.yml
+  ansible-lint -c "${MOLECULE_PROJECT_DIRECTORY}/.ansible-lint.yml" roles/

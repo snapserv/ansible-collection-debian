@@ -1,5 +1,25 @@
 ---
 - hosts: all
-  tasks:
-    - debug:
-        msg: Hello World
+  roles:
+    - role: apt
+      vars:
+        apt_repositories:
+          # test with 'present' state
+          - state: present
+            name: debian
+            repo: deb https://deb.debian.org/debian {{ ansible_distribution_release }} main non-free contrib
+
+          # test with 'absent' state
+          - state: absent
+            name: debian-backports
+            repo: deb https://deb.debian.org/debian {{ ansible_distribution_release }}-backports main non-free contrib
+
+          # test with default state (= present)
+          - name: debian-updates
+            repo: deb https://deb.debian.org/debian {{ ansible_distribution_release }}-updates main non-free contrib
+
+          # test with custom gpg key url
+          - name: nginx
+            key_id: 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+            key_url: https://nginx.org/keys/nginx_signing.key
+            repo: deb http://nginx.org/packages/debian {{ ansible_distribution_release }} nginx
